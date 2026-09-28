@@ -989,6 +989,49 @@ const CHECKLISTS = [
      ]},
    ]
  },
+ {
+   id: "cl18",
+   num: "18",
+   title: "Medikolegal — Unit Forensik",
+   subtitle: "Unit Medikolegal & Etika — Unit Perubatan Forensik / Mortuary",
+   note: "“If it is not documented, it is difficult to prove that it was done.” Records must be contemporaneous, complete, legible and traceable. Record no. of records checked under Other Matters.",
+   items: [
+     { group: "A. General Documentation & Record Integrity", bil: "A1", perkara: "Patient / Case Identification — Full name, IC/RN/MRN (where applicable), age/sex and relevant case identifiers consistently recorded on forms/records." },
+     { bil: "A2", perkara: "Date, Time & Entry Header — Every entry has date, 24-hour time and clear entry title/context where appropriate." },
+     { bil: "A3", perkara: "Traceability / Authentication — Each entry traceable to the staff member via full signature, printed name/short name, designation and official stamp/identifier." },
+     { bil: "A4", perkara: "Legibility & Terminology — Records legible; approved abbreviations used; ambiguous shorthand and copy-paste avoided." },
+     { bil: "A5", perkara: "Corrections — Single-line strike-through, original text readable, correction dated/timed/initialled; no erasing, blacking-out or correction fluid." },
+     { bil: "A6", perkara: "Late Entry — Clearly labelled as late entry with current date/time and actual event date/time where relevant; no backdating." },
+     { bil: "A7", perkara: "Blank Spaces / Sheets — Unused spaces closed appropriately; blank/unused continuation sheets not retained in active records." },
+     { bil: "A8", perkara: "Filing & Record Security — Records, reports, photographs and related documents filed systematically and securely; no loose or misplaced documents." },
+     { group: "B. Death / Case Identification & Receiving Process", bil: "B1", perkara: "Case Handover — On receipt of body/case, handover documented incl. source/location, date/time received and responsible staff." },
+     { bil: "B2", perkara: "Identity Verification — Identity verified against available identifiers and documentation before examination, storage, movement or release." },
+     { bil: "B3", perkara: "Body Tag / Identifier — Present, legible, secure and matches accompanying documentation." },
+     { bil: "B4", perkara: "Condition on Receipt — Condition of body, clothing, personal effects and visible identifiers on receipt documented where applicable." },
+     { bil: "B5", perkara: "Personal Belongings — Documented, secured, labelled and transferred with traceable acknowledgement where applicable." },
+     { bil: "B6", perkara: "Special / High-Risk Cases — Clearly identified; appropriate precautions/escalation documented." },
+     { group: "C. Forensic Examination / Post-Mortem Documentation", bil: "C1", perkara: "Examination Details — Date, time, location, type of examination and personnel involved clearly documented." },
+     { bil: "C2", perkara: "Clinical / Circumstantial Information — Relevant history, circumstances, referral information and clinical records reviewed and documented." },
+     { bil: "C3", perkara: "External Examination — Findings documented systematically incl. injuries, identifying marks, clothing and pertinent observations." },
+     { bil: "C4", perkara: "Measurements & Descriptions — Findings include site, size, appearance and other objective descriptors rather than vague statements." },
+     { bil: "C5", perkara: "Internal Examination / Procedure — Where applicable, procedures and significant findings documented clearly and chronologically." },
+     { bil: "C6", perkara: "Photographic Documentation — Photographs labelled/identified and traceable to the case and relevant finding." },
+     { bil: "C7", perkara: "Diagrams / Sketches — Clearly labelled, annotated, dated and authenticated where used." },
+     { bil: "C8", perkara: "Opinion / Conclusion — Clearly distinguished from observed findings and appropriately documented." },
+     { group: "D. Specimens, Evidence & Chain of Custody", bil: "D1", perkara: "Specimen Identification — Each item labelled with case identifier, specimen type and relevant date/time/personnel details." },
+     { bil: "D2", perkara: "Collection Record — What was collected, when, where/from whom and by whom documented." },
+     { bil: "D3", perkara: "Packaging & Sealing — Packaged, sealed and stored per SOP/policy; seal integrity maintained." },
+     { bil: "D4", perkara: "Chain of Custody — Every transfer traceable with date/time, releasing person, receiving person and acknowledgement/signature." },
+     { bil: "D5", perkara: "Storage / Security — Stored in secure, access-controlled area with appropriate environmental/storage conditions." },
+     { bil: "D6", perkara: "Dispatch / Laboratory Submission — Accompanied by complete documentation and traceable dispatch/receipt records." },
+     { group: "E. Reports, Certificates & Release Governance", bil: "E1", perkara: "Report Completeness — Forensic reports complete, legible, dated, authenticated and consistent with the examination record." },
+     { bil: "E2", perkara: "Supporting Documents — Investigation/referral forms, lab results, photographs and supporting documents linked/filed." },
+     { bil: "E3", perkara: "Death Certification / Documentation — Completed by authorised person with appropriate date/time and traceability." },
+     { bil: "E4", perkara: "Release Authorisation — Body/case released only after required authorisation/documentation verified." },
+     { bil: "E5", perkara: "Release Identity Check — Recipient identity/authority verified and documented; date/time and receiving acknowledgement recorded." },
+     { bil: "E6", perkara: "Handover at Release — Documents, belongings and/or specimens transferred with appropriate acknowledgement and traceability." },
+   ]
+ },
 ];
 
 
@@ -1107,6 +1150,7 @@ function renderStandardSection(cl, L) {
  const items = cl.items.map(item => {
    const key = `${cl.id}_${item.bil}`;
    return `
+     ${item.group ? `<div class="osh-section-title">${item.group}</div>` : ''}
      <div class="audit-item">
        <div class="item-header">
          <span class="item-num">${item.bil}</span>
@@ -1158,6 +1202,7 @@ function renderStandardSection(cl, L) {
      <p>${cl.subtitle}</p>
    </div>
    <div style="padding:16px">
+     ${cl.note ? `<p style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:12px">${cl.note}</p>` : ''}
      ${items}
      <div class="form-group" style="margin-top:8px">
        <label>${L.lainlain}</label>
