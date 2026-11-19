@@ -24,7 +24,8 @@ The two files map directly to the two files in the Apps Script editor (`Index`, 
 | What | Where | Owner / account |
 |---|---|---|
 | **Live web app** (share this) | https://shorturl.at/wciBI → `https://script.google.com/macros/s/AKfycbwygLuJptq7t-Qb33gpol1NEixJFjm5dPS_mie3W2yIo9YZ4oolHWXhJnrRPfejMDf1/exec` | Apps Script project in **ffairis@gmail.com** |
-| Live deployment ID | `AKfycbwygLuJptq7t-Qb33gpol1NEixJFjm5dPS_mie3W2yIo9YZ4oolHWXhJnrRPfejMDf1` (ends **…MDf1**) | ffairis@gmail.com |
+| Live Apps Script project "CGR 2026 Web App" | Script ID `16BW-tc_F5fxUsJZbWlt-l1jbX8e9Twe0n7MT80iJX3rwX928bZSXEP_Q` | ffairis@gmail.com |
+| Live deployment ID | `AKfycbwygLuJptq7t-Qb33gpol1NEixJFjm5dPS_mie3W2yIo9YZ4oolHWXhJnrRPfejMDf1` (ends **…MDf1**) — version 4 as of 19 Nov 2026 | ffairis@gmail.com |
 | Responses Sheet "CGR 2026 Responses" | https://docs.google.com/spreadsheets/d/1s66ybd5OGg1iGegeZ88EXFPWSy9idzAkcAaWARKc41E (tab `CGR Responses`) | Owned by **ferwahn@moh.gov.my**, shared to ffairis@gmail.com as Editor |
 | Photos folder "CGR 2026 Photos" | https://drive.google.com/drive/folders/1Y0nH3OlWqM18ZT_1udUE5Zi71wsmPnh1 | Owned by **ferwahn@moh.gov.my**, shared to ffairis@gmail.com as Editor |
 | Notification email | `CONFIG.NOTIFICATION_EMAIL` in `Code.gs` | CGR Coordinator (Dr. Aina Zuhana) |
@@ -61,17 +62,38 @@ to make step 3 easier — just ask.
 
 ### Using clasp instead of copy-paste (optional)
 
-`clasp` on the Mac is currently logged in as **udppkhtpn@moh.gov.my**, which does **not** have
-access to the live ffairis@gmail.com project. To push directly:
+clasp logins per machine:
+
+| Machine | Default clasp login | Live-project login |
+|---|---|---|
+| Mac | udppkhtpn@moh.gov.my (no access to live project) | not set up |
+| Windows PC | ferwahn@moh.gov.my (sees only the non-live projects) | `--user ffairis` (ffairis@gmail.com) |
+
+**One-time:** add a named login for ffairis@gmail.com without replacing the default one:
 
 ```bash
-clasp logout && clasp login        # sign in as ffairis@gmail.com
+clasp login --user ffairis          # browser opens → pick ffairis@gmail.com → Allow
+clasp list --user ffairis           # should show "CGR 2026 Web App"
 ```
 
-Then add a `.clasp.json` with the live project's Script ID (Apps Script editor →
-⚙️ Project Settings → Script ID), and run `clasp push` followed by
-`clasp deploy -i AKfycbwygLuJptq7t-Qb33gpol1NEixJFjm5dPS_mie3W2yIo9YZ4oolHWXhJnrRPfejMDf1`.
-Note clasp expects `appsscript.json` in the folder — `clasp pull` it first.
+If clasp says the Apps Script API is disabled, turn it on at
+https://script.google.com/home/usersettings (signed in as ffairis@gmail.com).
+
+**Each deploy** — work from a scratch folder outside the repo, not the repo itself:
+
+1. `clasp clone 16BW-tc_F5fxUsJZbWlt-l1jbX8e9Twe0n7MT80iJX3rwX928bZSXEP_Q --user ffairis`
+   (in an empty folder; gives `Code.js`, `Index.html`, `appsscript.json`).
+2. Compare the cloned files with the repo's last commit. If they differ, someone edited in the
+   Apps Script editor — bring those edits into the repo first, or the push will overwrite them.
+3. Copy repo `Code.gs` → `Code.js` and repo `Index.html` → `Index.html`, **stripping the BOM**
+   from `Index.html` (the live file has none; a BOM before `<!DOCTYPE>` can trigger quirks mode).
+4. `clasp push --force --user ffairis`
+5. `clasp deploy -i AKfycbwygLuJptq7t-Qb33gpol1NEixJFjm5dPS_mie3W2yIo9YZ4oolHWXhJnrRPfejMDf1 -d "<what changed>" --user ffairis`
+   — the `-i` updates the existing **…MDf1** deployment in place, so the short link keeps working.
+6. `clasp deployments --user ffairis` to confirm …MDf1 moved to the new version, then test via the short link.
+
+Why not push straight from the repo: the repo's `Index.html` has a BOM and the folder holds files
+(README, PDFs, helper pages) that clasp would otherwise try to upload.
 
 ---
 
@@ -184,14 +206,15 @@ The repo is worked on from both the Mac and a Windows PC. GitHub is the hand-off
 | Claude's memory for this project (IDs, owners) | Stored per machine. The same facts are in this README — tell Claude to read it first. |
 | Global `CLAUDE.md` (house style, git rules) | Copy `~/.claude/CLAUDE.md` from the Mac to `C:\Users\<you>\.claude\CLAUDE.md`. |
 | `HTPN_CGR_Medikolegal_Checklist 2026.docx` | Not in git — copy via USB/Drive if needed. |
-| `clasp` login | Not needed; use the copy-paste deploy above (ask Claude for the "copy page"). |
+| `clasp` login | Per machine. Windows PC already has `--user ffairis`; otherwise use the copy-paste deploy (ask Claude for the "copy page"). |
 
 **Every session, on either machine:**
 
 1. `git pull` before you start.
 2. Commit and `git push` when you finish, so the other machine gets the changes.
 3. Deploying is the same everywhere: paste into the ffairis@gmail.com Apps Script project →
-   **Manage deployments → …MDf1 → Edit → New version**.
+   **Manage deployments → …MDf1 → Edit → New version** — or, on the Windows PC, use clasp
+   (see *Using clasp* above).
 
 ## First-time setup (new Apps Script project)
 
@@ -210,3 +233,4 @@ The repo is worked on from both the Mac and a Windows PC. GitHub is the hand-off
 | 29 Sep 2026 | Added checklist 18 Medikolegal — Unit Forensik (BM + EN). Pushed to GitHub `udppkhtpn-hue/eCGR_App`. Fixed "no access" on submit by sharing Sheet + Photos folder with ffairis@gmail.com; redeployed live `…MDf1` deployment in place. |
 | 29 Sep 2026 | Restyled app in HIO house dark theme (jump nav, per-checklist counters, collapsible findings, pre-submit tally); fixed answers being wiped on re-render and "New Round" carrying over old statuses. |
 | 19 Nov 2026 | Added `.gitattributes` and Windows PC setup steps so the repo can be worked on from both machines. |
+| 19 Nov 2026 | Replaced checklist 18 with the general Medico-Legal Documentation Audit form (11 items). Set up clasp `--user ffairis` on the Windows PC and deployed via clasp → live …MDf1 now version 4. |
