@@ -159,9 +159,39 @@ Standard checklist shape:
 ## Repo conventions
 
 - `Index.html` is **UTF-8 with BOM and CRLF line endings** (as exported from Apps Script).
-  Preserve these when editing with scripts, or the git diff will show every line changed.
+  `.gitattributes` stores it byte-for-byte (`-text`) so Git never converts it; other files are LF.
+  Still preserve the BOM/CRLF when editing with scripts, or the diff will show every line changed.
 - Word/Excel source documents are not committed.
 - Keep this repo in sync manually after any edit made directly in the Apps Script editor.
+
+## Working on another computer (e.g. Windows work PC)
+
+The repo is worked on from both the Mac and a Windows PC. GitHub is the hand-off point.
+
+**One-time setup on Windows** (needs Git for Windows and the Claude desktop app):
+
+1. Open Claude Desktop → **Code** tab, start a session in the folder where you keep projects.
+2. Ask Claude: *"Clone https://github.com/udppkhtpn-hue/eCGR_App.git here, then read the README."*
+   - If GitHub asks you to sign in, use the **udppkhtpn-hue** account (the repo is private). A different
+     GitHub account must first be added as a collaborator on the repo.
+   - No line-ending config is needed — `.gitattributes` handles it.
+3. Start a new Code session in the cloned `eCGR_App` folder and work as normal.
+
+**Things that do NOT come across via GitHub:**
+
+| Item | How to bring it over |
+|---|---|
+| Claude's memory for this project (IDs, owners) | Stored per machine. The same facts are in this README — tell Claude to read it first. |
+| Global `CLAUDE.md` (house style, git rules) | Copy `~/.claude/CLAUDE.md` from the Mac to `C:\Users\<you>\.claude\CLAUDE.md`. |
+| `HTPN_CGR_Medikolegal_Checklist 2026.docx` | Not in git — copy via USB/Drive if needed. |
+| `clasp` login | Not needed; use the copy-paste deploy above (ask Claude for the "copy page"). |
+
+**Every session, on either machine:**
+
+1. `git pull` before you start.
+2. Commit and `git push` when you finish, so the other machine gets the changes.
+3. Deploying is the same everywhere: paste into the ffairis@gmail.com Apps Script project →
+   **Manage deployments → …MDf1 → Edit → New version**.
 
 ## First-time setup (new Apps Script project)
 
@@ -178,3 +208,5 @@ Standard checklist shape:
 |---|---|
 | 8 Sep 2026 | Initial source backup to git. |
 | 29 Sep 2026 | Added checklist 18 Medikolegal — Unit Forensik (BM + EN). Pushed to GitHub `udppkhtpn-hue/eCGR_App`. Fixed "no access" on submit by sharing Sheet + Photos folder with ffairis@gmail.com; redeployed live `…MDf1` deployment in place. |
+| 29 Sep 2026 | Restyled app in HIO house dark theme (jump nav, per-checklist counters, collapsible findings, pre-submit tally); fixed answers being wiped on re-render and "New Round" carrying over old statuses. |
+| 19 Nov 2026 | Added `.gitattributes` and Windows PC setup steps so the repo can be worked on from both machines. |
