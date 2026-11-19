@@ -4,3 +4,8 @@
 # Editor / scratch
 *.swp
 *~
+
+# Source documents (not committed)
+*.pdf
+*.docx
+*.xlsx

@@ -111,25 +111,25 @@ Defined in the `CHECKLISTS` array in `Index.html`.
 | 14 | Jabatan Kecemasan (ETD) | Kumpulan CGR |
 | 16 | Unit Dietetik dan Sajian (JDS) | Kumpulan CGR |
 | 17 | Pemeriksaan Tempat Kerja OSH (scored Ya/Tidak/TB) | UKA / OSH — KKM 2024 |
-| 18 | **Medikolegal — Unit Forensik** (added Sep 2026) | Unit Medikolegal & Etika |
+| 18 | **Medikolegal** — Medico-Legal Documentation Audit (Nov 2026) | Unit Medikolegal & Etika |
 
-### Checklist 18 — Medikolegal (Unit Forensik)
+### Checklist 18 — Medikolegal (Medico-Legal Documentation Audit)
 
-Source: `HTPN_CGR_Medikolegal_Checklist 2026.docx` from Unit Medikolegal & Etika (kept out of git).
-34 items in five domains:
+Source: `CGR AUDIT FORM.pdf` — the general "Medico-Legal Documentation Audit Form" (kept out of git).
+Replaced the earlier 34-item Unit Forensik checklist in Nov 2026. 11 items (bil 1–11):
 
-- **A. Dokumentasi Am & Integriti Rekod** (A1–A8)
-- **B. Pengenalpastian Kematian / Kes & Proses Penerimaan** (B1–B6)
-- **C. Dokumentasi Pemeriksaan Forensik / Bedah Siasat** (C1–C8)
-- **D. Spesimen, Bahan Bukti & Rantaian Jagaan** (D1–D6)
-- **E. Laporan, Sijil & Tadbir Urus Pelepasan** (E1–E6)
+Date and Time · Header · Signature and Stamp · Mistake Rectification · Handwriting Legibility ·
+Inappropriate Abbreviation · Investigation Reports Review · Prescription Slip · Consent Form ·
+Record Keeping · Remedial Actions Taken for Medicolegal Cases (if applicable) and Others.
 
 Differences from the paper form:
-- Uses the app's 4 statuses (Patuh / Perlu Penambahbaikan / Tidak Patuh / T/B) instead of C / NC / NA.
-- "No. of records checked" and "Location" have no dedicated fields — the section note asks
+- C / NC / NA map to the app's statuses Patuh / Tidak Patuh / T/B (the app also offers
+  *Perlu Penambahbaikan*).
+- *Remarks/Issues* → each item's *Penemuan* field; the "picture proof" appendix → each item's photo.
+- *Recommendation* and *Department Feedback* have no dedicated fields — the section note asks
   auditors to record them under *Lain-lain Perkara*.
-- BM translation was done by Claude Code; key terms (jenazah, bedah siasat, rantaian jagaan,
-  bahan bukti, catatan lewat) should be confirmed by Unit Medikolegal.
+- Date/Time, Department/Ward and Auditor come from the round's existing Visit Info fields.
+- BM translation was done by Claude Code; should be confirmed by Unit Medikolegal.
 
 ### Adding or editing a checklist
 
