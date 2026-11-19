@@ -121,24 +121,29 @@ and folder inside ffairis@gmail.com and update the IDs in `Code.gs` (the script 
 
 Defined in the `CHECKLISTS` array in `Index.html`.
 
-| No. | Checklist | Unit |
-|---|---|---|
-| 1 | Pemerhatian Am Wad | Ketua Kumpulan |
-| 2 | Keselamatan Kebakaran | Unit Penyelia Hospital |
-| 3 | Kawalan Infeksi | UKI |
-| 4–10 | Kejururawatan | Unit Kejururawatan |
-| 11 | Kualiti | Unit Kualiti HKJ |
-| 12 | Pengurusan Aset | Unit Aset |
-| 13 | Perkhidmatan Kejuruteraan | Unit Kejuruteraan |
-| 14 | Jabatan Kecemasan (ETD) | Kumpulan CGR |
-| 16 | Unit Dietetik dan Sajian (JDS) | Kumpulan CGR |
-| 17 | Pemeriksaan Tempat Kerja OSH (scored Ya/Tidak/TB) | UKA / OSH — KKM 2024 |
-| 18 | **Medikolegal** — Medico-Legal Documentation Audit (Nov 2026) | Unit Medikolegal & Etika |
+| No. | `id` | Checklist | Unit |
+|---|---|---|---|
+| 1 | cl1 | Pemerhatian Am Wad | Ketua Kumpulan |
+| 2 | cl2 | Keselamatan Kebakaran | Unit Penyelia Hospital |
+| 3 | cl3 | Kawalan Infeksi | UKI |
+| 4 | cl4 | Kejururawatan | Unit Kejururawatan |
+| 5 | cl11 | Kualiti | Unit Kualiti HKJ |
+| 6 | cl12 | Pengurusan Aset | Unit Aset |
+| 7 | cl13 | Perkhidmatan Kejuruteraan | Unit Kejuruteraan |
+| 8 | cl14 | Jabatan Kecemasan (ETD) | Kumpulan CGR |
+| 9 | cl16 | Unit Dietetik dan Sajian (JDS) | Kumpulan CGR |
+| 10 | cl17 | Pemeriksaan Tempat Kerja OSH (scored Ya/Tidak/TB) | UKA / OSH — KKM 2024 |
+| 11 | cl18 | **Medikolegal** — Medico-Legal Documentation Audit (Nov 2026) | Unit Medikolegal & Etika |
 
-### Checklist 18 — Medikolegal (Medico-Legal Documentation Audit)
+Numbering was made sequential on 19 Nov 2026 (previously 1–3, 4–10, 11–14, 16–18). Item numbers
+are prefixed with the checklist number (e.g. Kualiti 5.1–5.7; Kejururawatan 4.1–4.47). The
+internal `id`s were kept unchanged because the code uses them as keys (e.g. `#section-cl17` for
+OSH scoring). Sheet rows submitted before that date carry the old numbers.
+
+### Checklist 11 — Medikolegal (Medico-Legal Documentation Audit)
 
 Source: `CGR AUDIT FORM.pdf` — the general "Medico-Legal Documentation Audit Form" (kept out of git).
-Replaced the earlier 34-item Unit Forensik checklist in Nov 2026. 11 items (bil 1–11):
+Replaced the earlier 34-item Unit Forensik checklist in Nov 2026. 11 items (bil 11.1–11.11):
 
 Date and Time · Header · Signature and Stamp · Mistake Rectification · Handwriting Legibility ·
 Inappropriate Abbreviation · Investigation Reports Review · Prescription Slip · Consent Form ·
@@ -159,13 +164,13 @@ Standard checklist shape:
 
 ```js
 {
-  id: "cl18", num: "18", title: "…", subtitle: "…",
+  id: "cl19", num: "12", title: "…", subtitle: "…",   // next new checklist
   note: "BM note shown at top of section",          // optional
   note_en: "English note",                          // optional
   items: [
     { group: "A. BM heading", group_en: "A. English heading",   // optional, starts a sub-heading
-      bil: "A1", perkara: "BM text", perkara_en: "English text" },  // perkara_en optional
-    { bil: "A2", perkara: "…", perkara_en: "…" },
+      bil: "12.1", perkara: "BM text", perkara_en: "English text" },  // perkara_en optional
+    { bil: "12.2", perkara: "…", perkara_en: "…" },
   ]
 }
 ```
