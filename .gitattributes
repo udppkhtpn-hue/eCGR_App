@@ -1,0 +1,15 @@
+# Keep line endings identical on Mac and Windows so diffs stay clean.
+
+# Index.html is exported from Apps Script with CRLF + BOM — store and check out byte-for-byte.
+Index.html -text
+
+# Everything else is LF.
+*.gs   text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+
+*.docx binary
+*.png  binary
+*.jpg  binary
