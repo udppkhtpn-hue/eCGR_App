@@ -17,6 +17,11 @@ and submit to a Google Sheet with an email notification to the CGR coordinator.
 This is a **Google Apps Script web app**, not a Node/Vite project — there is no build step.
 The two files map directly to the two files in the Apps Script editor (`Index`, `Code.gs`).
 
+> **Portal branch (`portal`):** `src/` is the new source of truth — the Apps Script project root for the
+> CGR Portal (see `docs/PORTAL_PLAN.md`). The root `Index.html` and `Code.gs` are kept unchanged as the
+> copy of what is currently live and are not updated on this branch. Preview locally with
+> `python3 tools/preview.py` (writes `dist/preview.html` with a mock `google.script.run`).
+
 ---
 
 ## Live system (as of 29 Sep 2026)
@@ -221,6 +226,29 @@ The repo is worked on from both the Mac and a Windows PC. GitHub is the hand-off
    **Manage deployments → …MDf1 → Edit → New version** — or, on the Windows PC, use clasp
    (see *Using clasp* above).
 
+## Portal branch — staging deploy
+
+All portal work is tested on a **staging** Apps Script project first; the live deployment (`…MDf1`) is
+not touched until a phase passes acceptance.
+
+1. Make a **copy** of the "CGR 2026 Responses" spreadsheet and of the "CGR 2026 Photos" folder, and create a
+   new Apps Script project (e.g. "CGR Portal STAGING"). Note its Script ID (Project Settings).
+2. Bind clasp to it (from `src/`; the real `.clasp.json` is gitignored):
+   ```bash
+   cd src
+   cp .clasp.staging.json.example .clasp.json     # then paste the staging Script ID into it
+   clasp push                                     # uploads *.gs, *.html, appsscript.json (DevMock.html is excluded by .claspignore)
+   ```
+   `.clasp.live.json.example` is the same for the live project — only use it after a phase is accepted,
+   and deploy with `clasp deploy -i <…MDf1 deployment id>` so the short link keeps working.
+3. In the **staging** project's `Config.gs`, set `SHEET_ID` and `PHOTO_FOLDER_ID` to the copies (do not commit those edits).
+4. Run `setupPortal()` once from the Apps Script editor (creates the portal tabs, seeds them, prints the temporary
+   admin PIN in the execution log). Re-running is safe.
+5. Report spike: in Project Settings → Script properties add `ALLOW_SPIKE` = `1`, then run `spikeReportOMFS()`.
+   The Sheet and PDF land in `CGR Reports/_spike/`.
+
+Photos are no longer shared as "anyone with the link": uploaded files stay private in the Photos folder.
+
 ## First-time setup (new Apps Script project)
 
 1. Go to [script.google.com](https://script.google.com) → **New Project** → name it "CGR 2026 Web App".
@@ -239,3 +267,4 @@ The repo is worked on from both the Mac and a Windows PC. GitHub is the hand-off
 | 29 Sep 2026 | Restyled app in HIO house dark theme (jump nav, per-checklist counters, collapsible findings, pre-submit tally); fixed answers being wiped on re-render and "New Round" carrying over old statuses. |
 | 19 Nov 2026 | Added `.gitattributes` and Windows PC setup steps so the repo can be worked on from both machines. |
 | 19 Nov 2026 | Replaced checklist 18 with the general Medico-Legal Documentation Audit form (11 items). Set up clasp `--user ffairis` on the Windows PC and deployed via clasp → live …MDf1 now version 4. |
+| 20 Nov 2026 | `portal` branch, Phase 0: `src/` Apps Script project (Config/Db/Auth/Setup/Report .gs, split Index/Styles/App), photo privacy fix (no public links), client-side photo downscale, report generator spike, DevMock preview. |

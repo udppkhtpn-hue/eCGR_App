@@ -9,3 +9,10 @@
 *.pdf
 *.docx
 *.xlsx
+
+# Local preview build
+dist/
+
+# clasp project binding (per machine / per environment)
+.clasp.json
+src/.clasp.json

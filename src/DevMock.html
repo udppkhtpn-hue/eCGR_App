@@ -1,0 +1,36 @@
+<script>
+// ══════════════════════════════════════════════════════════
+// DEV MOCK — fake google.script.run for local preview (never pushed: see .claspignore)
+// Chainable like the real thing: google.script.run.withSuccessHandler(f).withFailureHandler(g).submitForm(data)
+// Payloads are logged to the console; ?fail=1 in the URL makes every call fail.
+// ══════════════════════════════════════════════════════════
+(function () {
+ const FAIL = /[?&]fail=1/.test(location.search);
+ const RESULTS = {
+   submitForm: () => ({ success: true, message: 'Berjaya dihantar! / Submitted successfully! (DevMock)' }),
+   uploadPhoto: (b64, name) => ({ success: true, id: 'mock-' + Date.now(), url: 'https://drive.google.com/file/d/mock-' + encodeURIComponent(name) + '/view' }),
+ };
+ function runner(ok, fail) {
+   return new Proxy({}, {
+     get(_, prop) {
+       if (prop === 'withSuccessHandler') return fn => runner(fn, fail);
+       if (prop === 'withFailureHandler') return fn => runner(ok, fn);
+       return function () {
+         const args = Array.from(arguments);
+         // Don't flood the console with base64
+         const shown = args.map(a => typeof a === 'string' && a.length > 80 ? a.slice(0, 40) + '…(' + a.length + ' chars)' : a);
+         console.log('[DevMock] ' + String(prop), shown);
+         window.__devMockCalls = window.__devMockCalls || [];
+         window.__devMockCalls.push({ fn: String(prop), args });
+         setTimeout(() => {
+           if (FAIL) { if (fail) fail(new Error('DevMock forced failure')); return; }
+           const res = RESULTS[prop] ? RESULTS[prop].apply(null, args) : { success: true };
+           if (ok) ok(res);
+         }, 300);
+       };
+     },
+   });
+ }
+ window.google = { script: { run: runner(null, null) } };
+})();
+</script>
