@@ -494,6 +494,7 @@ function seedChecklistItems_() {
 // Idempotent: creates any missing tab (header row frozen + bold), seeds empty tabs only,
 // never touches "CGR Responses". Run it again any time — it only fills gaps.
 function setupPortal() {
+ requireEditor_();
  const log = [];
  const ss = getSpreadsheet_();
 
@@ -516,8 +517,8 @@ function setupPortal() {
  seedAdmin_(log);
  ensureReportsFolder_(log);
 
+ // Log only — never return it: the log can contain the one-time admin PIN.
  Logger.log(log.join("\n"));
- return log;
 }
 
 function seedIfEmpty_(tab, objects, log) {
@@ -556,6 +557,7 @@ function ensureReportsFolder_(log) {
 // dryRun (default TRUE) only logs counts. Never modifies "CGR Responses". Re-running is safe:
 // groups already migrated are recorded in AuditLog (event legacy_migrated) and skipped.
 function migrateLegacy(dryRun) {
+ requireEditor_();
  dryRun = dryRun !== false;
  const legacy = getSheetOrThrow_(CONFIG.SHEET_TAB);
  const lastRow = legacy.getLastRow();
@@ -686,4 +688,11 @@ function legacyDept_(jabatan, depts) {
  if (lower.indexOf("omfs") >= 0) return "omfs";
  const alias = { "kecemasan dan trauma": "kecemasan" };
  return alias[lower] || "lain";
+}
+
+// The editor's Run button can't pass arguments, so this is how to migrate for real
+// (after reviewing the dry-run counts from migrateLegacy()).
+function migrateLegacyCommit() {
+ requireEditor_();
+ return migrateLegacy(false);
 }

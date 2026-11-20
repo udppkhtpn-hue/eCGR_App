@@ -246,6 +246,13 @@ not touched until a phase passes acceptance.
    admin PIN in the execution log). Re-running is safe.
 5. Report spike: in Project Settings → Script properties add `ALLOW_SPIKE` = `1`, then run `spikeReportOMFS()`.
    The Sheet and PDF land in `CGR Reports/_spike/`.
+6. Legacy data: run `migrateLegacy()` (dry run — logs counts only), check the numbers, then run
+   `migrateLegacyCommit()` to migrate for real.
+
+**Security rule:** the web app is anonymous, so any top-level server function whose name does *not*
+end in `_` can be called by anyone with the URL. Maintenance functions (`setupPortal`, `migrateLegacy*`,
+`spikeReportOMFS`) start with `requireEditor_()` so they only run from the Apps Script editor;
+everything else that is internal ends in `_`.
 
 Photos are no longer shared as "anyone with the link": uploaded files stay private in the Photos folder.
 

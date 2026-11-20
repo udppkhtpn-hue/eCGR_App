@@ -16,6 +16,7 @@ const SPIKE_PNG_A_ = "iVBORw0KGgoAAAANSUhEUgAAAKAAAAB4CAIAAAD6wG44AAABNElEQVR42u
 const SPIKE_PNG_B_ = "iVBORw0KGgoAAAANSUhEUgAAAHgAAACgCAIAAABIaz/HAAABQUlEQVR42u3YMQ0AIAxFwcphRhMikIgcJGCgEwMkzSUd33Tbb+zV05ujpae/6wMEaNB60KBBgwBdChrQmx40aNB60KBBgwBdCxqQZQhaDxo0aBCgQev9oy1D0CBAg9aDBg0ahH+0ZagHDRo0CNCg9aD9oy1DEKBB60GDBg0CtH+03jIEDRocaNB60KD9owFZhqD1oEGDBgcatN4/2jIEDQ40aD1o0KDB+UdbhnrQoEGDAw1aD9o/2jIEBxq0HjRo0OBA+0frLUPQoMGBBq0HDdo/GpBlCFoPGjRocKBB6/2jLUPQ4ECD1oMGDRqcf7RlqAcNGjQ40KD1oP2jLUNwoEHrQYMGDQ60f7TeMgQNGhxo0HrQoP2jAVmGoPWgQYMGBxq03j/aMgQNDjRoPWjQoMH5R1uGetCgQYMDDVoP+mt/AHri42QDO7sUAAAAAElFTkSuQmCC";
 
 function spikeReportOMFS() {
+ requireEditor_();
  if (PropertiesService.getScriptProperties().getProperty("ALLOW_SPIKE") !== "1") {
    throw new Error("Spike disabled. Set Script Property ALLOW_SPIKE=1 in the Apps Script editor to run it.");
  }

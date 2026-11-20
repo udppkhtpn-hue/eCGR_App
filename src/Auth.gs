@@ -11,6 +11,19 @@
 
 const PEPPER_PROP_ = "PIN_PEPPER";
 
+// Every top-level function without a trailing "_" can be called from the browser via
+// google.script.run — and the web app is anonymous. Admin/maintenance functions must
+// call this first so they only run from the Apps Script editor.
+// From the editor, getActiveUser() is the person running it; from an anonymous web-app
+// call it is empty, so the check fails.
+function requireEditor_() {
+ const active = Session.getActiveUser().getEmail();
+ const effective = Session.getEffectiveUser().getEmail();
+ if (!active || active !== effective) {
+   throw new Error("Run this function from the Apps Script editor.");
+ }
+}
+
 // Returns the pepper, creating a random one on first use.
 function getPepper_() {
  const props = PropertiesService.getScriptProperties();

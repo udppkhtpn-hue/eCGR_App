@@ -1,7 +1,7 @@
 /**
 * ============================================================
 * CODE.GS — legacy CGR form backend (unchanged behaviour)
-* submitForm / uploadPhoto / sendEmail serve the current form.
+* submitForm / uploadPhoto / sendEmail_ serve the current form.
 * CONFIG lives in Config.gs, doGet in Web.gs.
 * ============================================================
 */
@@ -68,7 +68,7 @@ function submitForm(data) {
 
 
    // Send email notification
-   sendEmail(data, timestamp);
+   sendEmail_(data, timestamp);
 
 
    return { success: true, message: "Berjaya dihantar! / Submitted successfully!" };
@@ -100,7 +100,7 @@ function uploadPhoto(base64Data, fileName, mimeType) {
 
 
 // ── SEND EMAIL NOTIFICATION ─────────────────────────────────
-function sendEmail(data, timestamp) {
+function sendEmail_(data, timestamp) {
  try {
    const checklistNames = data.sections.map(s => s.title).join("\n  • ");
    const subject = `[CGR 2026] Laporan Baru — ${data.jabatan} (${data.tarikh})`;
