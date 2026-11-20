@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CGR 2026 — HTPN</title>
+<?!= include('Styles') ?>
+</head>
+<body>
+
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+ <div class="spinner"></div>
+ <div class="loading-text" id="loadingText">Menghantar... / Submitting...</div>
+</div>
+
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+
+<!-- HEADER -->
+<div class="app-header">
+ <div class="header-top">
+   <div>
+     <div class="brand">CGR 2026 ▸ HTPN</div>
+     <h1 id="h-title">Clinical Governance Round</h1>
+     <p>Unit Pengurusan Risiko &amp; Survelan Klinikal</p>
+   </div>
+   <div class="lang-toggle">
+     <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+     <button class="lang-btn" onclick="setLang('ms')" id="btn-ms">BM</button>
+   </div>
+ </div>
+ <nav class="jump-nav" id="jumpNav" aria-label="Checklists"></nav>
+ <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+
+<div class="container">
+
+
+ <!-- SUCCESS SCREEN -->
+ <div class="success-screen" id="successScreen">
+   <div class="success-icon"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+   <h2 id="s-title">Berjaya Dihantar!</h2>
+   <p id="s-body">Laporan CGR anda telah direkodkan dan dihantar kepada Penyelaras CGR.<br><br>Terima kasih atas komitmen anda dalam Rondaan Tadbir Urus Klinikal HTPN 2026.</p>
+   <button class="btn-new" onclick="resetForm()" id="s-btn">+ Rondaan Baru</button>
+ </div>
+
+
+ <!-- MAIN FORM -->
+ <div id="mainForm">
+
+
+   <!-- VISIT INFO -->
+   <div class="card">
+     <div class="card-header"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></span> <span id="h-visitinfo">Visit Information / Maklumat Rondaan</span></div>
+     <div class="card-body">
+       <div class="form-group">
+         <label for="auditor"><span id="l-auditor">Auditor Name</span> <span class="required">*</span></label>
+         <input type="text" id="auditor" placeholder="Dr. / Pn. / En." required>
+       </div>
+       <div class="form-group">
+         <label for="jawatan"><span id="l-jawatan">Position / Unit</span> <span class="required">*</span></label>
+         <input type="text" id="jawatan" placeholder="cth: Ketua Unit Kawalan Infeksi" required>
+       </div>
+       <div class="form-group">
+         <label for="jabatan"><span id="l-jabatan">Department Visited</span> <span class="required">*</span></label>
+         <select id="jabatan" required>
+           <option value="">-- Select / Pilih --</option>
+           <option>Farmasi</option>
+           <option>Kecemasan dan Trauma</option>
+           <option>Pediatrik</option>
+           <option>OMFS / Pergigian Keperluan Khas</option>
+           <option>Radiologi</option>
+           <option>Forensik</option>
+           <option>Pembedahan</option>
+           <option>Ortopedik</option>
+           <option>Patologi</option>
+           <option>Nefrologi</option>
+           <option>Lain-lain</option>
+         </select>
+       </div>
+       <div class="field-row">
+         <div class="form-group">
+           <label for="tarikh"><span id="l-tarikh">Date / Tarikh</span> <span class="required">*</span></label>
+           <input type="date" id="tarikh" required>
+         </div>
+         <div class="form-group">
+           <label for="masaMula"><span id="l-masa">Start Time / Masa Mula</span></label>
+           <input type="time" id="masaMula">
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+   <!-- CHECKLIST SELECTION -->
+   <div class="card">
+     <div class="card-header"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11 6h9M11 12h9M11 18h9"/></svg></span> <span id="h-select">Select Checklists / Pilih Senarai Semak</span></div>
+     <div class="card-body">
+       <p style="font-size:13px;color:var(--muted);margin-bottom:14px" id="p-select">Select the checklists you will be conducting during this round.</p>
+       <div class="checklist-grid" id="checklistGrid">
+         <!-- populated by JS -->
+       </div>
+     </div>
+   </div>
+
+
+   <!-- DYNAMIC CHECKLIST SECTIONS -->
+   <div id="checklistSections"></div>
+
+
+   <!-- SUMMARY -->
+   <div class="card summary-card" id="summaryCard" style="display:none">
+     <div class="card-header"><span class="icon"><svg class="ico" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></span> <span id="h-summary">Round Summary / Rumusan Rondaan</span></div>
+     <div class="card-body">
+       <div class="tally" id="tally"></div>
+       <div class="form-group">
+         <label for="rumusan" id="l-rumusan">Overall Summary / Rumusan Keseluruhan</label>
+         <textarea id="rumusan" rows="4" placeholder="Nyatakan penemuan utama rondaan ini..."></textarea>
+       </div>
+       <div class="form-group">
+         <label for="isuKritikal" id="l-isu" style="color:var(--red)">Critical Issues / Isu Kritikal</label>
+         <textarea id="isuKritikal" rows="3" placeholder="Kosongkan jika tiada / Leave blank if none"></textarea>
+       </div>
+       <div class="form-group">
+         <label for="masaTamat" id="l-tamat">End Time / Masa Tamat</label>
+         <input type="time" id="masaTamat">
+       </div>
+     </div>
+   </div>
+
+
+   <!-- SUBMIT -->
+   <div class="submit-section" id="submitSection" style="display:none">
+     <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+       <svg class="ico" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/></svg>
+       <span id="btn-submit-text">Submit Report / Hantar Laporan</span>
+     </button>
+   </div>
+
+
+ </div><!-- end mainForm -->
+</div><!-- end container -->
+
+
+<?!= include('App') ?>
+</body>
+</html>

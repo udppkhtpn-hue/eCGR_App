@@ -1,0 +1,1053 @@
+<script>
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+
+
+const LANG = {
+ en: {
+   visitinfo: "Visit Information",
+   select: "Select Checklists",
+   pselect: "Select the checklists you will be conducting during this round.",
+   summary: "Round Summary",
+   rumusan: "Overall Summary",
+   isu: "Critical Issues (leave blank if none)",
+   tamat: "End Time",
+   submit: "Submit Report",
+   status: ["✅ Compliant", "⚠️ Needs Improvement", "❌ Non-compliant", "N/A"],
+   status_ui: ["Compliant", "Improve", "Non-compliant", "N/A"],
+   details: "Finding / Action / Photo",
+   tally: ["Compliant", "Improve", "Non-comp.", "N/A", "Unanswered"],
+   penemuan: "Finding / Penemuan",
+   tindakan: "Corrective Action / Tindakan Pembetulan",
+   susulan: "Follow-up Finding / Penemuan Susulan",
+   lainlain: "Other Matters / Lain-lain Perkara",
+   photo: "Tap to add photo",
+   photosub: "JPG, PNG up to 5MB",
+   success_title: "Submitted Successfully!",
+   success_body: "Your CGR report has been recorded and sent to the CGR Coordinator.",
+   new_round: "+ New Round",
+   submitting: "Submitting...",
+   osh_score: "OSH Compliance Score",
+   remarks: "Overall Remarks / Ulasan Keseluruhan",
+   auditor_label: "Auditor Name",
+   jawatan_label: "Position / Unit",
+   jabatan_label: "Department Visited",
+   tarikh_label: "Date",
+   masa_label: "Start Time",
+ },
+ ms: {
+   visitinfo: "Maklumat Rondaan",
+   select: "Pilih Senarai Semak",
+   pselect: "Tandakan senarai semak yang akan dilakukan dalam rondaan ini.",
+   summary: "Rumusan Rondaan",
+   rumusan: "Rumusan Keseluruhan",
+   isu: "Isu Kritikal (kosongkan jika tiada)",
+   tamat: "Masa Tamat",
+   submit: "Hantar Laporan",
+   status: ["✅ Patuh", "⚠️ Perlu Penambahbaikan", "❌ Tidak Patuh", "T/B"],
+   status_ui: ["Patuh", "Perlu Baiki", "Tidak Patuh", "T/B"],
+   details: "Penemuan / Tindakan / Foto",
+   tally: ["Patuh", "Perlu Baiki", "Tidak Patuh", "T/B", "Belum Dijawab"],
+   penemuan: "Penemuan",
+   tindakan: "Tindakan Pembetulan / Penambahbaikan",
+   susulan: "Penemuan Susulan",
+   lainlain: "Lain-lain Perkara",
+   photo: "Ketik untuk tambah foto",
+   photosub: "JPG, PNG sehingga 5MB",
+   success_title: "Berjaya Dihantar!",
+   success_body: "Laporan CGR anda telah direkodkan dan dihantar kepada Penyelaras CGR.",
+   new_round: "+ Rondaan Baru",
+   submitting: "Menghantar...",
+   osh_score: "Skor Pematuhan OSH",
+   remarks: "Ulasan Keseluruhan",
+   auditor_label: "Nama Auditor",
+   jawatan_label: "Jawatan / Unit",
+   jabatan_label: "Jabatan yang Dilawati",
+   tarikh_label: "Tarikh",
+   masa_label: "Masa Mula",
+ }
+};
+
+
+const CHECKLISTS = [
+ {
+   id: "cl1",
+   num: "1",
+   title: "Pemerhatian Am Wad",
+   subtitle: "Ketua Kumpulan",
+   items: [
+     { bil: "1.1", perkara: "Bilangan pesakit vs. bilangan katil. Sistem Pengurusan Katil — siapa yang bertanggungjawab?" },
+     { bil: "1.2", perkara: "Bilangan kemasukan baru sejak jam 12 Tengahari?" },
+     { bil: "1.3", perkara: "Bilangan kemasukan baru yang belum dilihat oleh HO/MO wad?" },
+     { bil: "1.4", perkara: "Bilangan HO/MO semasa lawatan? Mencukupi? Ada yang MIA?" },
+     { bil: "1.5", perkara: "Kebersihan kawasan wad?" },
+     { bil: "1.6", perkara: "Ada pengunjung di luar waktu melawat (pesakit tidak kritikal)?" },
+     { bil: "1.7", perkara: "Bilangan pesakit discaj pagi ini? Pesakit masih di wad?" },
+     { bil: "1.8", perkara: "Lain-lain perkara" },
+   ]
+ },
+ {
+   id: "cl2",
+   num: "2",
+   title: "Keselamatan Kebakaran",
+   subtitle: "Unit Penyelia Hospital",
+   items: [
+     { bil: "2.1", perkara: "Sudut Keselamatan — tersedia dan kemaskini?" },
+     { bil: "2.2", perkara: "Laluan keluar kecemasan (fire exit route) — bebas halangan?" },
+     { bil: "2.3", perkara: "Lampu laluan keluar kecemasan (fire exit light) — berfungsi?" },
+     { bil: "2.4", perkara: "Persediaan bencana (Disaster Preparation) — ada pelan?" },
+     { bil: "2.5", perkara: "Ujian staf: nombor alat pemadam api & tindakan semasa kebakaran" },
+     { bil: "2.6", perkara: "Senarai tanggungjawab (List of responsibility) — dipamerkan?" },
+     { bil: "2.7", perkara: "Alat pemadam api — lokasi, bilangan, dan pemeriksaan" },
+   ]
+ },
+ {
+   id: "cl3",
+   num: "3",
+   title: "Kawalan Infeksi",
+   subtitle: "Unit Kawalan Infeksi (UKI)",
+   items: [
+     { bil: "3.1", perkara: "Kesedaran Kebersihan Tangan — poster/papan tanda/program?" },
+     { bil: "3.2", perkara: "Bilangan hand scrub tersedia? Mencukupi?" },
+     { bil: "3.3", perkara: "Pemerhatian kaedah/kekerapan penggunaan hand scrub?" },
+     { bil: "3.4", perkara: "Penggunaan PPE: dipakai dengan betul & dibuang ke tempat yang betul?" },
+     { bil: "3.5", perkara: "Kebersihan wad/klinik/unit, pantri, tong sampah, bilik air" },
+     { bil: "3.6", perkara: "Troli/peralatan pesakit: bersih, humidifier berlabel, mask oksigen tidak digantung" },
+     { bil: "3.7", perkara: "Pengurusan bag kain kotor: bag merah (plastik alginated), bag putih, kedua-dua bertutup" },
+     { bil: "3.8", perkara: "Tong sisa klinikal: tidak melimpah, tiada alatan tajam" },
+     { bil: "3.9", perkara: "Tong sisa am: tidak melimpah, tiada sisa klinikal" },
+     { bil: "3.10", perkara: "Tempat simpanan losyen: bersih, tidak tamat tempoh, ada tarikh dibuka" },
+     { bil: "3.11", perkara: "Kes jangkitan/Isolation: MRSA/MRO/ESBL/TB — ada signage & PPE/hand rub?" },
+     { bil: "3.12", perkara: "Keputusan audit kebersihan tangan terkini? Kawasan untuk ditambahbaik?" },
+     { bil: "3.13", perkara: "Standard pembersihan peralatan klinikal (pam, commode, drip stand, troli)?" },
+   ]
+ },
+ {
+   id: "cl4",
+   num: "4",
+   title: "Kejururawatan",
+   subtitle: "Unit Kejururawatan",
+   items: [
+     { bil: "4.1", perkara: "Bilangan jururawat (semua gred) semasa tugas? Nisbah jururawat:pesakit?" },
+     { bil: "4.2", perkara: "Pemerhatian dicatat dengan betul mengikut jadual? Carta tanda vital & skor kesakitan?" },
+     { bil: "4.3", perkara: "Siasatan yang diarahkan telah dilaksanakan?" },
+     { bil: "4.4", perkara: "Ubat yang diarahkan telah diberikan? Nota penjagaan ada? Kesilapan ubat?" },
+     { bil: "4.5", perkara: "Pesakit dengan drip — mengalir? Tarikh & masa ditulis? Pemantauan thrombophlebitis?" },
+     { bil: "4.6", perkara: "Ada pesakit menunggu prosedur? Berapa lama?" },
+     { bil: "4.7", perkara: "Ada pesakit DIL? Keluarga dimaklumkan?" },
+     { bil: "4.8", perkara: "Maklum balas pesakit tentang makanan (jika sedang makan)?" },
+     { bil: "4.9", perkara: "Kebersihan kawasan memuaskan?" },
+     { bil: "4.10", perkara: "Pengawasan keselamatan BHT?" },
+     { bil: "4.11", perkara: "Buku MC dalam laci berkunci? Orang bertanggungjawab boleh dihubungi?" },
+     { bil: "4.12", perkara: "Laporan kejururawatan dikemaskini dalam sistem IT? Serah terima penjagaan?" },
+     { bil: "4.13", perkara: "Ada transfusi darah berlaku di wad sekarang?" },
+     { bil: "4.14", perkara: "Dokumentasi (statistik) transfusi darah?" },
+     { bil: "4.15", perkara: "Pensampelan pesakit & pelabelan dengan 2 pengecam?" },
+     { bil: "4.16", perkara: "Senarai semak pra-transfusi?" },
+     { bil: "4.17", perkara: "Pengenalpastian tepi katil (bedside identification)?" },
+     { bil: "4.18", perkara: "Borang persetujuan diisi?" },
+     { bil: "4.19", perkara: "Senarai semak transfusi?" },
+     { bil: "4.20", perkara: "Dokumentasi kejatuhan pesakit?" },
+     { bil: "4.21", perkara: "Penandaan/gelang merah untuk pesakit risiko tinggi?" },
+     { bil: "4.22", perkara: "Pelekat magnet tersedia di wad?" },
+     { bil: "4.23", perkara: "Penilaian kondisi pesakit (cth: hipoglisemia) dan intervensi awal?" },
+     { bil: "4.24", perkara: "Penilaian persekitaran untuk risiko jatuh?" },
+     { bil: "4.25", perkara: "Dokumentasi oleh AJK — data pengenalpastian pesakit?" },
+     { bil: "4.26", perkara: "Semasa kemasukan atau pemindahan pesakit?" },
+     { bil: "4.27", perkara: "Pemberian ubat (oleh staf)?" },
+     { bil: "4.28", perkara: "Transfusi darah — pengesahan identiti?" },
+     { bil: "4.29", perkara: "Pengumpulan cecair badan (oleh staf)?" },
+     { bil: "4.30", perkara: "Pengesahan kematian?" },
+     { bil: "4.31", perkara: "Prosedur dan perkhidmatan lain — carian MRN semasa pendaftaran?" },
+     { bil: "4.32", perkara: "Bilangan nota kes pesakit discaj masih di wad?" },
+     { bil: "4.33", perkara: "Bilangan nota kes yang diperiksa?" },
+     { bil: "4.34", perkara: "Bilangan harta pesakit discaj >1 minggu lalu masih di wad?" },
+     { bil: "4.35", perkara: "Bilangan rumusan discaj yang belum siap?" },
+     { bil: "4.36", perkara: "Jika MC diberikan — tempoh dan nombor rujukan dinyatakan?" },
+     { bil: "4.37", perkara: "Jika kes rujukan — adakah balasan kepada doktor perujuk?" },
+     { bil: "4.38", perkara: "Dokumentasi AJK SSSL?" },
+     { bil: "4.39", perkara: "Hanya staf dengan keistimewaan yang relevan melakukan prosedur/pembedahan?" },
+     { bil: "4.40", perkara: "'Time-out' dilakukan sebelum prosedur dimulakan?" },
+     { bil: "4.41", perkara: "Pemeriksaan instrumen sebelum pembedahan/kiraan pra-op?" },
+     { bil: "4.42", perkara: "Penandaan tapak prosedur (semasa pesakit sedar)?" },
+     { bil: "4.43", perkara: "Pelaksanaan amalan terbaik untuk mencegah SSI?" },
+     { bil: "4.44", perkara: "Almari DDA: sistem kunci, dokumentasi pergerakan ubat, pengesahan stok?" },
+     { bil: "4.45", perkara: "Penyimpanan ubat: item peti sejuk & bukan peti sejuk?" },
+     { bil: "4.46", perkara: "Pematuhan amalan 7R?" },
+     { bil: "4.47", perkara: "Data kesilapan ubat atau near miss?" },
+   ]
+ },
+ {
+   id: "cl11",
+   num: "5",
+   title: "Kualiti",
+   subtitle: "Unit Kualiti HKJ",
+   items: [
+     { bil: "5.1", perkara: "Mortality & Morbidity/POMR: staf hadir mesyuarat outcome? Tindakan dikomunikasikan?" },
+     { bil: "5.2", perkara: "Audit Klinikal & KPI/HPIA: sekurang-kurangnya 1 audit klinikal dalam tahun semasa?" },
+     { bil: "5.3", perkara: "Lean Healthcare: petunjuk prestasi dan KPI dianalisis dalam mesyuarat Lean?" },
+     { bil: "5.4", perkara: "Malaysian Patient Safety Goals (MPSG): audit dilakukan? Bukti tindakan pembetulan?" },
+     { bil: "5.5", perkara: "Incident Reporting (IR): pemfailan, pangkalan data, slip preskripsi, IR/RCA?" },
+     { bil: "5.6", perkara: "Program Bebas Kesakitan: dokumentasi, pembaris kesakitan, sudut kesakitan, kit?" },
+     { bil: "5.7", perkara: "Credentialing and Privileging: pangkalan data & sijil privileging?" },
+   ]
+ },
+ {
+   id: "cl12",
+   num: "6",
+   title: "Pengurusan Aset",
+   subtitle: "Unit Aset",
+   items: [
+     { bil: "6.1", perkara: "Pemeriksaan fizikal aset dan perbandingan dengan KEW.PA-7?" },
+     { bil: "6.2", perkara: "KEW.PA-7 dikemaskini dan dipaparkan?" },
+     { bil: "6.3", perkara: "Pegawai penempatan di KEW.PA-7 masih ada di jabatan?" },
+     { bil: "6.4", perkara: "Aset ada KEW.PA3/KEW.PA4 (didaftarkan)?" },
+     { bil: "6.5", perkara: "Aset ditampal label/sticker dengan nombor berdaftar SPPA?" },
+     { bil: "6.6", perkara: "Aset dalam proses pelupusan dilabel 'dalam proses lupus'?" },
+     { bil: "6.7", perkara: "Aset rosak telah mohon BER1 dengan Radicare?" },
+     { bil: "6.8", perkara: "Pergerakan aset direkodkan dalam KEW.PA9?" },
+   ]
+ },
+ {
+   id: "cl13",
+   num: "7",
+   title: "Perkhidmatan Kejuruteraan",
+   subtitle: "Unit Kejuruteraan",
+   items: [
+     { bil: "7.1", perkara: "Kebersihan am tandas/bilik mandi? Perkhidmatan pembersihan?" },
+     { bil: "7.2", perkara: "Sinki/paip/tangki air dalam kondisi baik? Air panas — bilik mandi?" },
+     { bil: "7.3", perkara: "Ada kerja penyelenggaraan perlu dilakukan atau permintaan dalam RiW?" },
+     { bil: "7.4", perkara: "Peralatan — berfungsi atau status BER?" },
+     { bil: "7.5", perkara: "Elektrikal/sivil/mekanikal/bioperubatan — ada kerosakan/tidak berfungsi?" },
+     { bil: "7.6", perkara: "Perkhidmatan pembersihan — rekod/pemantauan dan mengikut jadual?" },
+     { bil: "7.7", perkara: "Perkhidmatan linen — rekod/pemantauan dan mengikut jadual?" },
+     { bil: "7.8", perkara: "Peralatan/aset wad — PPM dilakukan?" },
+   ]
+ },
+ {
+   id: "cl14",
+   num: "8",
+   title: "Jabatan Kecemasan (ETD)",
+   subtitle: "Kumpulan CGR",
+   items: [
+     { bil: "8.1", perkara: "Kawasan menunggu: bilangan pesakit zon hijau, staf kaunter, bilangan MO?" },
+     { bil: "8.2", perkara: "Triaj: bilangan MA bertugas, >3 tahun pengalaman, pesakit ditriaj dengan betul?" },
+     { bil: "8.3", perkara: "Dokumentasi rekod pesakit: tarikh/masa, aduan, tanda vital, diagnosis, preskripsi, MC?" },
+     { bil: "8.4", perkara: "Troli kecemasan: sistem semakan harian, didokumentasikan, 5 item ubat rawak?" },
+     { bil: "8.5", perkara: "Peralatan kecemasan: sistem semakan berkala, ada peralatan penting tidak berfungsi?" },
+     { bil: "8.6", perkara: "Almari DDA: sistem kunci, dokumentasi pergerakan ubat, pengesahan stok?" },
+     { bil: "8.7", perkara: "Bilik rawatan/prosedur: kebersihan, buangan tajam, peti sejuk, stok perubatan?" },
+     { bil: "8.8", perkara: "Pusat panggilan: bilangan MA, bilangan panggilan, dokumentasi, ambulans?" },
+     { bil: "8.9", perkara: "Teluk pemerhatian: bilangan pesakit vs. katil, jururawat bertugas, pemantauan?" },
+     { bil: "8.10", perkara: "Penyelenggaraan garis panduan, surat pekeliling dan rujukan?" },
+     { bil: "8.11", perkara: "Dokumentasi: dasar & SOP, minit mesyuarat jabatan, CME, peralatan BER?" },
+   ]
+ },
+ {
+   id: "cl16",
+   num: "9",
+   title: "Unit Dietetik dan Sajian (JDS)",
+   subtitle: "Kumpulan CGR",
+   items: [
+     { bil: "9.1A", perkara: "Kawasan dapur — kebersihan (pengurusan, penyediaan makanan, penyimpanan)?" },
+     { bil: "9.1B", perkara: "Lantai berminyak?" },
+     { bil: "9.1C", perkara: "Perkhidmatan pembersihan memuaskan?" },
+     { bil: "9.1D", perkara: "Pembuangan sampah memuaskan?" },
+     { bil: "9.1E", perkara: "Ada lalat di kawasan?" },
+     { bil: "9.2A", perkara: "Kebersihan penyediaan makanan memuaskan?" },
+     { bil: "9.2B", perkara: "Staf telah divaksin?" },
+     { bil: "9.2C", perkara: "Rasa makanan memuaskan?" },
+     { bil: "9.2D", perkara: "Dulang hidangan disimpan dengan betul?" },
+     { bil: "9.2E", perkara: "Persediaan hidangan memuaskan?" },
+     { bil: "9.2F", perkara: "Bahan mentah yang diterima memuaskan? (semakan rawak)" },
+     { bil: "9.3", perkara: "Peti sejuk: pembersihan, kebersihan, tiada item reput?" },
+     { bil: "9.4", perkara: "Stor: pembersihan, kebersihan, tiada item tamat tempoh, tiada tanda tikus/lipas?" },
+     { bil: "9.5", perkara: "Dokumentasi: dasar & SOP, minit mesyuarat, CME, peralatan BER?" },
+   ]
+ },
+ {
+   id: "cl17",
+   num: "10",
+   title: "Pemeriksaan Tempat Kerja OSH",
+   subtitle: "UKA / OSH — KKM 2024",
+   isOSH: true,
+   sections: [
+     { title: "A. Dasar Keselamatan dan Kesihatan", items: [
+       "A1. Dasar K&K Pekerjaan dipamerkan",
+       "A2. Dasar K&K Pekerjaan difahami",
+       "A3. Carta Organisasi JKK disediakan",
+     ]},
+     { title: "B. Kawalan Hazard Fizikal", items: [
+       "B1. Lantai tidak licin, rata, tiada hazard jatuh/near miss",
+       "B2. Permukaan siling dalam keadaan baik dan selamat",
+       "B3. Ruangan kerja kemas, tidak bersepah, bebas habuk",
+       "B4. Susun atur peralatan baik, tiada over stacking",
+       "B5. Pendawaian elektrik baik, tiada wayar rosak",
+       "B6. Stor penyimpanan tersusun rapi, tiada halangan di pintu",
+       "B7. Pencahayaan mencukupi, tiada lampu rosak",
+       "B8. Pengudaraan tempat kerja baik",
+       "B9. Suhu persekitaran memuaskan",
+       "B10. Tiada bunyi bising yang mengganggu",
+     ]},
+     { title: "C. Hazard Kimia", items: [
+       "C1. Ruang mesin fotostat mempunyai pengudaraan yang baik",
+       "C2. Bahan kimia disimpan di tempat khas, jauh dari makanan",
+       "C3. Tiada bahan kimia berbahaya tertumpah di luar tempat simpanan",
+       "C4. Pelabelan bahan kimia ada",
+       "C5. Tanda amaran bahaya kimia ada",
+       "C6. Helaian Data Keselamatan (SDS) disediakan",
+     ]},
+     { title: "D. Hazard Biologi", items: [
+       "D1. Kawasan kerja bebas dari lalat, lipas, tikus dan nyamuk",
+       "D2. Permukaan dinding dan siling bebas dari kulat",
+       "D3. Sampah makanan tidak dibuang dalam bakul sampah kawasan kerja",
+     ]},
+     { title: "E. Hazard Ergonomik", items: [
+       "E1. Stesen kerja dan peralatan sesuai dengan anggota",
+     ]},
+     { title: "F. Promosi", items: [
+       "F1. Bahan promosi OSH/kesihatan mental/gaya hidup sihat dipamerkan",
+     ]},
+     { title: "G. Pelan Tindakan Kecemasan (ERP)", items: [
+       "G1. Peti pertolongan cemas lengkap, mudah dilihat dan dicapai",
+       "G2. Perkakas dalam peti pertolongan cemas mencukupi dan dikemaskini",
+       "G3. Pelan lantai/pelan evakuasi dan senarai talian kecemasan dipamerkan",
+       "G4. Alat pemadam api ada, mencukupi, belum tamat tarikh, ada tatacara",
+       "G5. Gelong hos pemadam api disediakan, boleh digunakan dan diselenggara",
+       "G6. Signage/tanda arah KELUAR berfungsi",
+       "G7. Pintu rintangan api sentiasa ditutup",
+       "G8. Laluan keluar, tangga, pintu kecemasan tiada halangan, cahaya mencukupi",
+       "G9. Tempat berkumpul yang ditetapkan ada",
+     ]},
+     { title: "H. Kebajikan", items: [
+       "H1. Kemudahan tandas",
+       "H2. Tempat/ruang rehat (ruang solat)",
+       "H3. Kemudahan air minuman yang bersih",
+       "H4. Kemudahan riadah dan sosial",
+     ]},
+   ]
+ },
+ {
+   id: "cl18",
+   num: "11",
+   title: "Medikolegal",
+   subtitle: "Audit Dokumentasi Medikolegal (Medico-Legal Documentation Audit)",
+   note: "C = Patuh, NC = Tidak Patuh, NA = T/B. Catatkan ulasan/isu di ruangan Penemuan setiap perkara dan lampirkan foto bukti dokumentasi baik/lemah. Catatkan Cadangan (Recommendation) dan Maklum Balas Jabatan (Department Feedback) di bahagian Lain-lain Perkara.",
+   note_en: "C = Compliant, NC = Non-compliant, NA = N/A. Record remarks/issues under each item's Finding and attach photo proof of good/poor documentation. Record the Recommendation and Department Feedback under Other Matters.",
+   items: [
+     { bil: "11.1", perkara: "Tarikh dan Masa", perkara_en: "Date and Time" },
+     { bil: "11.2", perkara: "Pengepala (Header)", perkara_en: "Header" },
+     { bil: "11.3", perkara: "Tandatangan dan Cop", perkara_en: "Signature and Stamp" },
+     { bil: "11.4", perkara: "Pembetulan Kesilapan", perkara_en: "Mistake Rectification" },
+     { bil: "11.5", perkara: "Kejelasan Tulisan Tangan", perkara_en: "Handwriting Legibility" },
+     { bil: "11.6", perkara: "Singkatan Yang Tidak Sesuai", perkara_en: "Inappropriate Abbreviation" },
+     { bil: "11.7", perkara: "Semakan Laporan Penyiasatan", perkara_en: "Investigation Reports Review" },
+     { bil: "11.8", perkara: "Slip Preskripsi", perkara_en: "Prescription Slip" },
+     { bil: "11.9", perkara: "Borang Keizinan", perkara_en: "Consent Form" },
+     { bil: "11.10", perkara: "Penyimpanan Rekod", perkara_en: "Record Keeping" },
+     { bil: "11.11", perkara: "Tindakan Pembetulan Diambil bagi Kes Medikolegal (jika berkaitan) dan Lain-lain", perkara_en: "Remedial Actions Taken for Medicolegal Cases (if applicable) and Others" },
+   ]
+ }
+];
+
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+// Escape anything that goes into innerHTML / attributes (checklist text may later come from a Sheet or a user)
+function esc(v) {
+ return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+let currentLang = 'en';
+let selectedChecklists = new Set();
+let photoData = {}; // key: itemId, value: {base64, fileName, mimeType}
+
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+ renderChecklistGrid();
+ setTodayDate();
+ updateProgress();
+});
+
+
+function setTodayDate() {
+ const today = new Date().toISOString().split('T')[0];
+ document.getElementById('tarikh').value = today;
+}
+
+
+// ══════════════════════════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════════════════════════
+function setLang(lang) {
+ currentLang = lang;
+ document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+ document.getElementById('btn-ms').classList.toggle('active', lang === 'ms');
+ const L = LANG[lang];
+ document.getElementById('h-visitinfo').textContent = L.visitinfo;
+ document.getElementById('h-select').textContent = L.select;
+ document.getElementById('p-select').textContent = L.pselect;
+ document.getElementById('h-summary').textContent = L.summary;
+ document.getElementById('l-rumusan').textContent = L.rumusan;
+ document.getElementById('l-isu').textContent = L.isu;
+ document.getElementById('l-tamat').textContent = L.tamat;
+ document.getElementById('btn-submit-text').textContent = L.submit;
+ document.getElementById('l-auditor').textContent = L.auditor_label;
+ document.getElementById('l-jawatan').textContent = L.jawatan_label;
+ document.getElementById('l-jabatan').textContent = L.jabatan_label;
+ document.getElementById('l-tarikh').textContent = L.tarikh_label;
+ document.getElementById('l-masa').textContent = L.masa_label;
+ // Re-render sections with new language
+ if (selectedChecklists.size > 0) renderSections();
+}
+
+
+// ══════════════════════════════════════════════════════════
+// CHECKLIST GRID
+// ══════════════════════════════════════════════════════════
+function renderChecklistGrid() {
+ const grid = document.getElementById('checklistGrid');
+ grid.innerHTML = CHECKLISTS.map(cl => `
+   <label class="checklist-option">
+     <input type="checkbox" value="${esc(cl.id)}" onchange="toggleChecklist('${esc(cl.id)}', this.checked)">
+     <span class="checklist-label">
+       <span class="cl-num">${esc(cl.num)}</span>
+       ${esc(cl.title)}
+     </span>
+   </label>
+ `).join('');
+}
+
+
+function toggleChecklist(id, checked) {
+ if (checked) selectedChecklists.add(id);
+ else selectedChecklists.delete(id);
+ renderSections();
+ updateProgress();
+ document.getElementById('summaryCard').style.display = selectedChecklists.size > 0 ? 'block' : 'none';
+ document.getElementById('submitSection').style.display = selectedChecklists.size > 0 ? 'block' : 'none';
+}
+
+
+// ══════════════════════════════════════════════════════════
+// RENDER SECTIONS
+// ══════════════════════════════════════════════════════════
+function renderSections() {
+ const L = LANG[currentLang];
+ const container = document.getElementById('checklistSections');
+ // Keep typed answers when sections are re-rendered (checklist toggle / language switch)
+ const saved = snapshotFields(container);
+ container.innerHTML = '';
+
+
+ CHECKLISTS.forEach(cl => {
+   if (!selectedChecklists.has(cl.id)) return;
+
+
+   const div = document.createElement('div');
+   div.className = 'card';
+   div.id = 'section-' + cl.id;
+
+
+   if (cl.isOSH) {
+     div.innerHTML = renderOSHSection(cl, L);
+   } else {
+     div.innerHTML = renderStandardSection(cl, L);
+   }
+
+
+   container.appendChild(div);
+   // Re-attach photo listeners
+   div.querySelectorAll('.photo-input').forEach(input => {
+     input.addEventListener('change', (e) => handlePhotoUpload(e, input.dataset.key));
+   });
+ });
+
+
+ restoreFields(container, saved);
+ renderJumpNav();
+ updateCounts();
+}
+
+
+function snapshotFields(root) {
+ const saved = {};
+ root.querySelectorAll('input[type="text"][id], textarea[id]').forEach(el => {
+   if (el.value) saved[el.id] = el.value;
+ });
+ root.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+   saved['radio:' + el.name] = el.value;
+ });
+ return saved;
+}
+
+
+function restoreFields(root, saved) {
+ Object.entries(saved).forEach(([k, v]) => {
+   if (k.startsWith('radio:')) {
+     const r = root.querySelector(`input[name="${k.slice(6)}"][value="${v}"]`);
+     if (r) r.checked = true;
+   } else {
+     const el = document.getElementById(k);
+     if (el) el.value = v;
+   }
+ });
+ Object.entries(photoData).forEach(([key, p]) => {
+   const preview = document.getElementById('preview_' + key);
+   const img = document.getElementById('previewImg_' + key);
+   if (preview && img) {
+     img.src = 'data:' + p.mimeType + ';base64,' + p.base64;
+     preview.style.display = 'block';
+   }
+ });
+ root.querySelectorAll('.audit-item').forEach(item => {
+   const hasText = [...item.querySelectorAll('.item-details input[type="text"]')].some(i => i.value);
+   if (hasText || photoData[item.dataset.key]) item.classList.add('open');
+ });
+ updateOSHScore();
+}
+
+
+function renderJumpNav() {
+ const nav = document.getElementById('jumpNav');
+ nav.innerHTML = CHECKLISTS.filter(cl => selectedChecklists.has(cl.id)).map(cl => {
+   const m = cl.title.match(/\(([^)]+)\)/);
+   const short = cl.isOSH ? 'OSH' : m ? m[1] : cl.title.split(' ')[0];
+   return `<button type="button" class="jump-chip" id="jump_${esc(cl.id)}" onclick="jumpTo('${esc(cl.id)}')"><b>${esc(cl.num)}</b>${esc(short)}</button>`;
+ }).join('');
+}
+
+
+function jumpTo(id) {
+ const el = document.getElementById('section-' + id);
+ if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+
+function toggleDetails(btn) {
+ btn.closest('.audit-item').classList.toggle('open');
+}
+
+
+const ICON = {
+ plus: '<svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+ camera: '<svg class="ico" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+};
+
+
+function sectionHeader(cl, subtitle, total) {
+ return `
+   <div class="section-header">
+     <div class="sec-num">${esc(cl.num)}</div>
+     <div class="sec-text">
+       <h3>${esc(cl.title)}</h3>
+       <p>${esc(subtitle)}</p>
+     </div>
+     <span class="sec-count" id="count_${esc(cl.id)}">0/${total}</span>
+   </div>
+ `;
+}
+
+
+function renderStandardSection(cl, L) {
+ const en = currentLang === 'en';
+ const items = cl.items.map(item => {
+   const key = `${cl.id}_${item.bil}`;
+   const st = statusMap[key] || '';
+   const open = st === 'improve' || st === 'noncompliant';
+   const btn = (s, i) => `<button type="button" class="status-btn ${s}${st === s ? ' active' : ''}" onclick="setStatus('${esc(key)}','${s}',this)">${L.status_ui[i]}</button>`;
+   return `
+     ${item.group ? `<div class="osh-section-title">${esc((en && item.group_en) || item.group)}</div>` : ''}
+     <div class="audit-item${open ? ' open' : ''}" data-key="${esc(key)}" data-status="${esc(st)}">
+       <div class="item-header">
+         <span class="item-num">${esc(item.bil)}</span>
+         <span class="item-title">${esc((en && item.perkara_en) || item.perkara)}</span>
+       </div>
+       <div class="item-body">
+         <div class="status-group" role="group" aria-label="Status">
+           ${['compliant', 'improve', 'noncompliant', 'na'].map(btn).join('')}
+         </div>
+         <button type="button" class="details-toggle" onclick="toggleDetails(this)">${ICON.plus}<span>${L.details}</span></button>
+         <div class="item-details">
+           <div>
+             <label for="penemuan_${esc(key)}">${L.penemuan}</label>
+             <input type="text" id="penemuan_${esc(key)}" placeholder="...">
+           </div>
+           <div>
+             <label for="tindakan_${esc(key)}">${L.tindakan}</label>
+             <input type="text" id="tindakan_${esc(key)}" placeholder="...">
+           </div>
+           <div>
+             <label for="susulan_${esc(key)}">${L.susulan}</label>
+             <input type="text" id="susulan_${esc(key)}" placeholder="...">
+           </div>
+           <div>
+             <label class="photo-upload" for="photo_${esc(key)}">
+               <input type="file" id="photo_${esc(key)}" class="photo-input" data-key="${esc(key)}" accept="image/*" capture="environment">
+               <span class="upload-icon">${ICON.camera}</span>
+               <span class="upload-text">${L.photo}<br><small>${L.photosub}</small></span>
+             </label>
+             <div class="photo-preview" id="preview_${esc(key)}">
+               <img id="previewImg_${esc(key)}" src="" alt="preview">
+               <button type="button" class="remove-photo" onclick="removePhoto('${esc(key)}')">✕</button>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   `;
+ }).join('');
+ const note = (currentLang === 'en' && cl.note_en) || cl.note;
+
+
+ return `
+   ${sectionHeader(cl, cl.subtitle, cl.items.length)}
+   <div class="section-body">
+     ${note ? `<p class="section-note">${esc(note)}</p>` : ''}
+     ${items}
+     <div class="form-group" style="margin-top:16px">
+       <label for="lainlain_${esc(cl.id)}">${L.lainlain}</label>
+       <textarea id="lainlain_${esc(cl.id)}" rows="3" placeholder="..."></textarea>
+     </div>
+   </div>
+ `;
+}
+
+
+function renderOSHSection(cl, L) {
+ const sectionsHtml = cl.sections.map(sec => `
+   <div class="osh-section">
+     <div class="osh-section-title">${esc(sec.title)}</div>
+     ${sec.items.map(item => {
+       const key = cl.id + '_' + item.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+       return `
+         <div class="osh-item">
+           <span class="osh-item-text">${esc(item)}</span>
+           <div class="osh-radio-group">
+             <label class="osh-radio ya">
+               <input type="radio" name="${esc(key)}" value="Ya" onchange="updateOSHScore()">
+               <span class="osh-radio-label">Ya</span>
+             </label>
+             <label class="osh-radio tidak">
+               <input type="radio" name="${esc(key)}" value="Tidak" onchange="updateOSHScore()">
+               <span class="osh-radio-label">Tidak</span>
+             </label>
+             <label class="osh-radio tb">
+               <input type="radio" name="${esc(key)}" value="TB" onchange="updateOSHScore()">
+               <span class="osh-radio-label">TB</span>
+             </label>
+           </div>
+         </div>
+       `;
+     }).join('')}
+   </div>
+ `).join('');
+ const total = cl.sections.reduce((n, sec) => n + sec.items.length, 0);
+
+
+ return `
+   ${sectionHeader(cl, cl.subtitle + ' — Ya=1, Tidak=0, TB=Tidak Berkenaan', total)}
+   <div class="section-body">
+     <div class="osh-score-box">
+       <div class="score-value" id="oshScoreValue">—</div>
+       <div class="score-label">${L.osh_score} (%)</div>
+     </div>
+     ${sectionsHtml}
+     <div class="form-group" style="margin-top:12px">
+       <label for="osh_remarks">${L.remarks}</label>
+       <textarea id="osh_remarks" rows="3" placeholder="Secara keseluruhan, persekitaran tempat kerja..."></textarea>
+     </div>
+   </div>
+ `;
+}
+
+
+// ══════════════════════════════════════════════════════════
+// STATUS
+// ══════════════════════════════════════════════════════════
+const statusMap = {};
+function setStatus(key, status, btn) {
+ statusMap[key] = status;
+ const item = btn.closest('.audit-item');
+ item.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+ btn.classList.add('active');
+ item.dataset.status = status;
+ // Findings are expected for these, so open the details straight away
+ if (status === 'improve' || status === 'noncompliant') item.classList.add('open');
+ updateCounts();
+}
+
+
+// ══════════════════════════════════════════════════════════
+// PER-CHECKLIST COUNTS + ROUND TALLY
+// ══════════════════════════════════════════════════════════
+function checklistProgress(cl) {
+ if (cl.isOSH) {
+   const total = cl.sections.reduce((n, sec) => n + sec.items.length, 0);
+   const done = document.querySelectorAll(`#section-${cl.id} input[type="radio"]:checked`).length;
+   return { done, total };
+ }
+ const done = cl.items.filter(i => statusMap[`${cl.id}_${i.bil}`]).length;
+ return { done, total: cl.items.length };
+}
+
+
+function updateCounts() {
+ const L = LANG[currentLang];
+ const tally = { compliant: 0, improve: 0, noncompliant: 0, na: 0, open: 0 };
+ const oshMap = { Ya: 'compliant', Tidak: 'noncompliant', TB: 'na' };
+ CHECKLISTS.forEach(cl => {
+   if (!selectedChecklists.has(cl.id)) return;
+   const { done, total } = checklistProgress(cl);
+   const count = document.getElementById('count_' + cl.id);
+   if (count) {
+     count.textContent = done + '/' + total;
+     count.classList.toggle('done', done === total);
+   }
+   const chip = document.getElementById('jump_' + cl.id);
+   if (chip) chip.classList.toggle('done', done === total);
+   if (cl.isOSH) {
+     document.querySelectorAll(`#section-${cl.id} input[type="radio"]:checked`).forEach(r => tally[oshMap[r.value]]++);
+     tally.open += total - done;
+   } else {
+     cl.items.forEach(i => {
+       const st = statusMap[`${cl.id}_${i.bil}`];
+       if (st) tally[st]++; else tally.open++;
+     });
+   }
+ });
+ const el = document.getElementById('tally');
+ if (el) {
+   el.innerHTML = [['t-c', 'compliant'], ['t-i', 'improve'], ['t-n', 'noncompliant'], ['t-na', 'na'], ['t-o', 'open']]
+     .map(([cls, k], i) => `<div class="tally-cell ${cls}"><b>${tally[k]}</b><span>${L.tally[i]}</span></div>`)
+     .join('');
+ }
+}
+
+
+// ══════════════════════════════════════════════════════════
+// OSH SCORE
+// ══════════════════════════════════════════════════════════
+function updateOSHScore() {
+ const radios = document.querySelectorAll('#section-cl17 input[type="radio"]:checked');
+ let ya = 0, total = 0;
+ radios.forEach(r => {
+   if (r.value === 'Ya') { ya++; total++; }
+   else if (r.value === 'Tidak') { total++; }
+   // TB excluded from denominator
+ });
+ const score = total > 0 ? Math.round((ya / total) * 100) : 0;
+ const el = document.getElementById('oshScoreValue');
+ if (el) {
+   el.textContent = total > 0 ? score + '%' : '—';
+   el.style.color = total === 0 ? '' : score >= 80 ? 'var(--teal)' : score >= 60 ? 'var(--gold)' : 'var(--red)';
+ }
+ updateCounts();
+}
+
+
+// ══════════════════════════════════════════════════════════
+// PHOTO HANDLING
+// ══════════════════════════════════════════════════════════
+const PHOTO_MAX_PX = 1280;    // long side after downscale
+const PHOTO_JPEG_QUALITY = 0.8;
+
+function handlePhotoUpload(e, key) {
+ const file = e.target.files[0];
+ if (!file) return;
+ if (file.size > 5 * 1024 * 1024) { showToast('File too large (max 5MB)', 'error'); return; }
+
+ const reader = new FileReader();
+ reader.onload = (evt) => {
+   const original = evt.target.result; // data URL of the untouched file
+   // Downscale first; if the browser cannot decode the image, fall back to the original file
+   downscaleImage(original).then(dataUrl => {
+     setPhoto(key, dataUrl, dataUrl === original ? file.name : file.name.replace(/\.[^.]+$/, '') + '.jpg',
+       dataUrl === original ? file.type : 'image/jpeg');
+   });
+ };
+ reader.readAsDataURL(file);
+}
+
+// Resize to max PHOTO_MAX_PX on the long side and re-encode as JPEG (smaller uploads, fits Sheets image limits)
+function downscaleImage(dataUrl) {
+ return new Promise(resolve => {
+   const img = new Image();
+   img.onload = () => {
+     try {
+       const scale = Math.min(1, PHOTO_MAX_PX / Math.max(img.width, img.height));
+       const w = Math.max(1, Math.round(img.width * scale));
+       const h = Math.max(1, Math.round(img.height * scale));
+       const canvas = document.createElement('canvas');
+       canvas.width = w;
+       canvas.height = h;
+       const ctx = canvas.getContext('2d');
+       ctx.fillStyle = '#fff'; // JPEG has no alpha — flatten PNG transparency onto white
+       ctx.fillRect(0, 0, w, h);
+       ctx.drawImage(img, 0, 0, w, h);
+       resolve(canvas.toDataURL('image/jpeg', PHOTO_JPEG_QUALITY));
+     } catch (err) {
+       resolve(dataUrl);
+     }
+   };
+   img.onerror = () => resolve(dataUrl);
+   img.src = dataUrl;
+ });
+}
+
+function setPhoto(key, dataUrl, fileName, mimeType) {
+ photoData[key] = { base64: dataUrl.split(',')[1], fileName, mimeType };
+ const preview = document.getElementById('preview_' + key);
+ const img = document.getElementById('previewImg_' + key);
+ if (preview && img) {
+   img.src = dataUrl;
+   preview.style.display = 'block';
+ }
+}
+
+
+function removePhoto(key) {
+ delete photoData[key];
+ const preview = document.getElementById('preview_' + key);
+ const input = document.getElementById('photo_' + key);
+ if (preview) preview.style.display = 'none';
+ if (input) input.value = '';
+}
+
+
+// ══════════════════════════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════════════════════════
+function updateProgress() {
+ const total = CHECKLISTS.length + 4; // checklists + visit info fields
+ const filled = selectedChecklists.size +
+   (document.getElementById('auditor')?.value ? 1 : 0) +
+   (document.getElementById('jabatan')?.value ? 1 : 0) +
+   (document.getElementById('tarikh')?.value ? 1 : 0);
+ const pct = Math.min(100, Math.round((filled / total) * 100));
+ document.getElementById('progressFill').style.width = pct + '%';
+}
+
+
+document.addEventListener('input', updateProgress);
+document.addEventListener('change', updateProgress);
+
+
+// ══════════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════════
+function submitForm() {
+ const L = LANG[currentLang];
+
+
+ // Validate required fields
+ const auditor = document.getElementById('auditor').value.trim();
+ const jawatan = document.getElementById('jawatan').value.trim();
+ const jabatan = document.getElementById('jabatan').value;
+ const tarikh = document.getElementById('tarikh').value;
+
+
+ if (!auditor || !jawatan || !jabatan || !tarikh) {
+   showToast('Please fill in all required fields / Sila lengkapkan semua medan wajib', 'error');
+   window.scrollTo({ top: 0, behavior: 'smooth' });
+   return;
+ }
+ if (selectedChecklists.size === 0) {
+   showToast('Please select at least one checklist / Sila pilih sekurang-kurangnya satu senarai semak', 'error');
+   return;
+ }
+
+
+ // Build data payload
+ const sections = [];
+
+
+ CHECKLISTS.forEach(cl => {
+   if (!selectedChecklists.has(cl.id)) return;
+
+
+   if (cl.isOSH) {
+     const oshItems = [];
+     cl.sections.forEach(sec => {
+       sec.items.forEach(item => {
+         const key = cl.id + '_' + item.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'');
+         const checked = document.querySelector(`input[name="${key}"]:checked`);
+         oshItems.push({
+           bil: item.split('.')[0],
+           perkara: item,
+           status: checked ? checked.value : '',
+           penemuan: '',
+           tindakan: '',
+           susulan: '',
+           fotoUrl: '',
+         });
+       });
+     });
+     sections.push({
+       title: cl.num + '. ' + cl.title,
+       items: oshItems,
+       lainLain: document.getElementById('osh_remarks')?.value || '',
+     });
+   } else {
+     const items = cl.items.map(item => {
+       const key = `${cl.id}_${item.bil}`;
+       return {
+         bil: item.bil,
+         perkara: item.perkara,
+         status: getStatusLabel(statusMap[key] || '', L),
+         penemuan: document.getElementById('penemuan_' + key)?.value || '',
+         tindakan: document.getElementById('tindakan_' + key)?.value || '',
+         susulan: document.getElementById('susulan_' + key)?.value || '',
+         fotoUrl: photoData[key] ? '[Photo attached]' : '',
+         photoData: photoData[key] || null,
+       };
+     });
+     sections.push({
+       title: cl.num + '. ' + cl.title,
+       items,
+       lainLain: document.getElementById('lainlain_' + cl.id)?.value || '',
+     });
+   }
+ });
+
+
+ const formData = {
+   auditor,
+   jawatan,
+   jabatan,
+   tarikh,
+   masaMula: document.getElementById('masaMula').value || '',
+   masaTamat: document.getElementById('masaTamat').value || '',
+   bahasa: currentLang === 'en' ? 'English' : 'Bahasa Malaysia',
+   rumusan: document.getElementById('rumusan').value || '',
+   isuKritikal: document.getElementById('isuKritikal').value || '',
+   sections,
+ };
+
+
+ // Show loading
+ showLoading(L.submitting);
+
+
+ // Upload photos first, then submit
+ uploadPhotosAndSubmit(formData);
+}
+
+
+function getStatusLabel(status, L) {
+ const map = { compliant: L.status[0], improve: L.status[1], noncompliant: L.status[2], na: L.status[3] };
+ return map[status] || '';
+}
+
+
+function uploadPhotosAndSubmit(formData) {
+ // Collect all photos that need uploading
+ const photoPromises = [];
+ formData.sections.forEach(sec => {
+   sec.items.forEach(item => {
+     if (item.photoData) {
+       const p = new Promise((resolve) => {
+         google.script.run
+           .withSuccessHandler((result) => {
+             item.fotoUrl = result.success ? result.url : '[Upload failed]';
+             delete item.photoData;
+             resolve();
+           })
+           .withFailureHandler(() => {
+             item.fotoUrl = '[Upload failed]';
+             delete item.photoData;
+             resolve();
+           })
+           .uploadPhoto(item.photoData.base64, item.photoData.fileName, item.photoData.mimeType);
+       });
+       photoPromises.push(p);
+     }
+   });
+ });
+
+
+ Promise.all(photoPromises).then(() => {
+   // Clean up photoData before sending
+   formData.sections.forEach(sec => {
+     sec.items.forEach(item => { delete item.photoData; });
+   });
+
+
+   google.script.run
+     .withSuccessHandler(handleSuccess)
+     .withFailureHandler(handleError)
+     .submitForm(formData);
+ });
+}
+
+
+function handleSuccess(result) {
+ hideLoading();
+ if (result.success) {
+   document.getElementById('mainForm').style.display = 'none';
+   document.getElementById('successScreen').style.display = 'block';
+   const L = LANG[currentLang];
+   document.getElementById('s-title').textContent = L.success_title;
+   document.getElementById('s-body').textContent = L.success_body;
+   document.getElementById('s-btn').textContent = L.new_round;
+   window.scrollTo({ top: 0, behavior: 'smooth' });
+ } else {
+   showToast(result.message, 'error');
+ }
+}
+
+
+function handleError(error) {
+ hideLoading();
+ showToast('Error: ' + error.message, 'error');
+}
+
+
+function resetForm() {
+ document.getElementById('mainForm').style.display = 'block';
+ document.getElementById('successScreen').style.display = 'none';
+ document.getElementById('mainForm').reset?.();
+ selectedChecklists.clear();
+ Object.keys(photoData).forEach(k => delete photoData[k]);
+ Object.keys(statusMap).forEach(k => delete statusMap[k]);
+ ['rumusan', 'isuKritikal', 'masaTamat'].forEach(id => { document.getElementById(id).value = ''; });
+ renderChecklistGrid();
+ document.getElementById('checklistSections').innerHTML = '';
+ renderJumpNav();
+ document.getElementById('summaryCard').style.display = 'none';
+ document.getElementById('submitSection').style.display = 'none';
+ setTodayDate();
+ updateProgress();
+ window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+// ══════════════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════════════
+function showLoading(text) {
+ document.getElementById('loadingText').textContent = text || 'Loading...';
+ document.getElementById('loadingOverlay').classList.add('active');
+ document.getElementById('submitBtn').disabled = true;
+}
+function hideLoading() {
+ document.getElementById('loadingOverlay').classList.remove('active');
+ document.getElementById('submitBtn').disabled = false;
+}
+
+
+let toastTimeout;
+function showToast(msg, type) {
+ const toast = document.getElementById('toast');
+ toast.textContent = msg;
+ toast.className = 'toast ' + (type || '');
+ setTimeout(() => toast.classList.add('show'), 10);
+ clearTimeout(toastTimeout);
+ toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+</script>
